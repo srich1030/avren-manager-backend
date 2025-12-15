@@ -7,8 +7,8 @@ const helmet = require("helmet");
 
 const app = express();
 
-// Basic security and parsing
-aapp.use(
+// CORS so your dashboard can talk to the backend
+app.use(
   cors({
     origin: [
       "http://localhost:3000",
@@ -18,6 +18,7 @@ aapp.use(
   })
 );
 
+// Basic security and body parsing
 app.use(helmet());
 app.use(express.json());
 app.use(
@@ -158,7 +159,7 @@ function buildSummary(events, days) {
     }
   });
 
-  // Very simple saturation heuristic: more events = higher score, capped at 100
+  // Very simple saturation heuristic. More events -> higher score, capped at 100
   const saturationScore = Math.max(
     0,
     Math.min(100, Math.round((totalEvents / 80) * 100))
@@ -184,7 +185,8 @@ function buildSummary(events, days) {
       (a, b) =>
         (Date.parse(b.timestamp || "") || 0) -
         (Date.parse(a.timestamp || "") || 0)
-    );
+    )
+    .reverse();
 
   return {
     orgId: ORG_ID,
@@ -207,12 +209,12 @@ app.get("/health", (req, res) => {
 
 // Login endpoint exactly as your login page expects
 app.post("/login", (req, res) => {
-  // Body is x-www-form-urlencoded { password, redirect }
+  // Body is x www form urlencoded { password, redirect }
   const password = req.body.password || "";
 
   // In dev we just always succeed. If you want a real password, check here.
   if (!password) {
-    // still accept empty in dev to keep it simple
+    // Optional: add your own check
   }
 
   // Set a simple session cookie so the browser stores something
@@ -248,7 +250,11 @@ app.get("/orgs/:orgId/teams/:teamId/summary", (req, res) => {
 
 // Root route just for sanity check
 app.get("/", (req, res) => {
-  res.json({ message: "Avren mock backend running", org: ORG_ID, team: TEAM_ID });
+  res.json({
+    message: "Avren mock backend running",
+    org: ORG_ID,
+    team: TEAM_ID
+  });
 });
 
 // Start server
