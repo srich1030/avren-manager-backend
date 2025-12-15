@@ -8,12 +8,16 @@ const helmet = require("helmet");
 const app = express();
 
 // Basic security and parsing
-app.use(
+aapp.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: [
+      "http://localhost:3000",
+      "https://avren-dashboard.vercel.app"
+    ],
     credentials: true
   })
 );
+
 app.use(helmet());
 app.use(express.json());
 app.use(
