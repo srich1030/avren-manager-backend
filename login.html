@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Avren login</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        background: #020617;
+        color: #e5e7eb;
+        height: 100%;
+      }
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .card {
+        background: rgba(15, 23, 42, 0.98);
+        border-radius: 16px;
+        padding: 20px 22px;
+        box-shadow: 0 20px 60px rgba(15, 23, 42, 0.7);
+        border: 1px solid rgba(148, 163, 184, 0.6);
+        width: 320px;
+      }
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+      .logo-avatar {
+        width: 28px;
+        height: 28px;
+        border-radius: 999px;
+        background: #16a34a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        color: #ffffff;
+        font-size: 16px;
+      }
+      .logo-text-title {
+        font-size: 15px;
+        font-weight: 600;
+      }
+      .logo-text-sub {
+        font-size: 11px;
+        color: #9ca3af;
+      }
+      label {
+        display: block;
+        font-size: 12px;
+        margin-bottom: 4px;
+      }
+      input[type="password"] {
+        width: 100%;
+        padding: 7px 9px;
+        border-radius: 999px;
+        border: 1px solid #4b5563;
+        background: #020617;
+        color: #e5e7eb;
+        font-size: 12px;
+        box-sizing: border-box;
+      }
+      input[type="password"]:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.5);
+      }
+      button {
+        margin-top: 10px;
+        width: 100%;
+        padding: 7px 9px;
+        border-radius: 999px;
+        border: none;
+        background: #2563eb;
+        color: #f9fafb;
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+      }
+      button:hover {
+        background: #1d4ed8;
+      }
+      .note {
+        font-size: 11px;
+        color: #9ca3af;
+        margin-top: 8px;
+      }
+      .env {
+        font-size: 10px;
+        color: #6b7280;
+        margin-top: 10px;
+        text-align: right;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="logo">
+        <div class="logo-avatar">A</div>
+        <div>
+          <div class="logo-text-title">Avren manager login</div>
+          <div class="logo-text-sub">
+            Enter the shared team password to view dashboards.
+          </div>
+        </div>
+      </div>
+      <form method="post" action="/login">
+        <input
+          type="hidden"
+          name="redirect"
+          id="redirectInput"
+          value="/dashboard"
+        />
+        <label for="password">Password</label>
+        <input
+          id="password"
+          name="password"
+          type="password"
+          autocomplete="current-password"
+          required
+        />
+        <button type="submit">Sign in</button>
+      </form>
+      <div class="note">
+        Your browser agent only sends tool and domain. Prompts stay on the
+        device.
+      </div>
+      <div class="env">Local dev</div>
+    </div>
+
+    <script>
+      (function () {
+        const params = new URLSearchParams(window.location.search);
+        const redirect = params.get("redirect") || "/dashboard";
+        document.getElementById("redirectInput").value = redirect;
+      })();
+    </script>
+  </body>
+</html>

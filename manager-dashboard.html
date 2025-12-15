@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Avren Team AI Dashboard</title>
+    <style>
+      :root {
+        --bg: #f3f4f6;
+        --card-bg: #ffffff;
+        --border-subtle: #e5e7eb;
+        --border-strong: #d1d5db;
+        --text-main: #111827;
+        --text-subtle: #6b7280;
+        --accent: #2563eb;
+        --accent-soft: #eff6ff;
+        --accent-strong: #1d4ed8;
+        --danger: #dc2626;
+        --radius-card: 20px;
+        --radius-pill: 999px;
+        --shadow-soft: 0 12px 30px rgba(15, 23, 42, 0.08);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        background: var(--bg);
+        color: var(--text-main);
+      }
+
+      body {
+        padding: 24px;
+        display: flex;
+        justify-content: center;
+      }
+
+      .layout {
+        width: 100%;
+        max-width: 1120px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .logo-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 999px;
+        background: #16a34a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        color: #ffffff;
+        font-size: 16px;
+      }
+
+      .logo-text {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      .logo-title {
+        font-size: 16px;
+        font-weight: 600;
+      }
+
+      .logo-subtitle {
+        font-size: 12px;
+        color: var(--text-subtle);
+      }
+
+      .env-pill {
+        display: inline-flex;
+        align-items: center;
+        padding: 2px 8px;
+        border-radius: var(--radius-pill);
+        background: #f97316;
+        color: #ffffff;
+        font-size: 11px;
+        font-weight: 500;
+      }
+
+      .topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 12px;
+      }
+
+      .topbar-right strong {
+        font-weight: 600;
+      }
+
+      .pill-select {
+        border-radius: var(--radius-pill);
+        border: 1px solid var(--border-subtle);
+        padding: 5px 28px 5px 10px;
+        font-size: 12px;
+        background: #ffffff;
+      }
+
+      .pill-select:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 1px var(--accent-soft);
+      }
+
+      .card {
+        background: var(--card-bg);
+        border-radius: var(--radius-card);
+        box-shadow: var(--shadow-soft);
+        padding: 16px 18px;
+        border: 1px solid var(--border-subtle);
+      }
+
+      .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        margin-bottom: 10px;
+      }
+
+      .card-title {
+        font-size: 15px;
+        font-weight: 600;
+      }
+
+      .card-subtitle {
+        font-size: 12px;
+        color: var(--text-subtle);
+      }
+
+      .chip-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .chip {
+        border-radius: var(--radius-pill);
+        padding: 3px 9px;
+        font-size: 11px;
+        border: 1px solid var(--border-subtle);
+        background: #f9fafb;
+        color: var(--text-subtle);
+      }
+
+      .chip strong {
+        color: var(--text-main);
+      }
+
+      .chip.primary {
+        border-color: var(--accent-soft);
+        background: var(--accent-soft);
+        color: var(--accent-strong);
+        font-weight: 500;
+      }
+
+      .chip.danger {
+        border-color: #fee2e2;
+        background: #fef2f2;
+        color: var(--danger);
+      }
+
+      .main-grid {
+        display: grid;
+        grid-template-columns: 1.9fr 1.4fr;
+        gap: 14px;
+      }
+
+      .metrics-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .metric-card {
+        border-radius: 14px;
+        border: 1px solid var(--border-subtle);
+        background: #f9fafb;
+        padding: 8px 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .metric-label {
+        font-size: 11px;
+        color: var(--text-subtle);
+      }
+
+      .metric-value {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--text-main);
+      }
+
+      .metric-footnote {
+        font-size: 10px;
+        color: var(--text-subtle);
+      }
+
+      .risk-row {
+        display: flex;
+        gap: 6px;
+        margin-top: 4px;
+        flex-wrap: wrap;
+      }
+
+      .risk-pill {
+        border-radius: var(--radius-pill);
+        padding: 2px 7px;
+        font-size: 10px;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        border: 1px solid transparent;
+      }
+
+      .risk-pill span.dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+      }
+
+      .risk-low {
+        background: #ecfdf5;
+        border-color: #bbf7d0;
+        color: #15803d;
+      }
+
+      .risk-low span.dot {
+        background: #22c55e;
+      }
+
+      .risk-medium {
+        background: #fffbeb;
+        border-color: #fed7aa;
+        color: #92400e;
+      }
+
+      .risk-medium span.dot {
+        background: #f97316;
+      }
+
+      .risk-high {
+        background: #fef2f2;
+        border-color: #fecaca;
+        color: #b91c1c;
+      }
+
+      .risk-high span.dot {
+        background: #ef4444;
+      }
+
+      .risk-unknown {
+        background: #eef2ff;
+        border-color: #c7d2fe;
+        color: #4338ca;
+      }
+
+      .risk-unknown span.dot {
+        background: #6366f1;
+      }
+
+      .trend-row {
+        margin-top: 8px;
+        border-radius: 10px;
+        border: 1px dashed #e5e7eb;
+        padding: 8px;
+        font-size: 11px;
+        color: var(--text-subtle);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .trend-bar {
+        flex: 1;
+        height: 36px;
+        display: flex;
+        align-items: flex-end;
+        gap: 3px;
+      }
+
+      .trend-bar-col {
+        flex: 1;
+        border-radius: 6px 6px 0 0;
+        background: #e5e7eb;
+      }
+
+      .trend-bar-col.peak {
+        background: #dbeafe;
+      }
+
+      .trend-bar-col-inner {
+        width: 100%;
+        border-radius: inherit;
+      }
+
+      .tools-table,
+      .wf-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 11px;
+        margin-top: 4px;
+      }
+
+      .tools-table th,
+      .tools-table td,
+      .wf-table th,
+      .wf-table td {
+        padding: 4px 4px;
+        text-align: left;
+        border-bottom: 1px solid #f3f4f6;
+      }
+
+      .tools-table th,
+      .wf-table th {
+        font-weight: 500;
+        color: var(--text-subtle);
+      }
+
+      .empty {
+        font-size: 11px;
+        color: var(--text-subtle);
+        margin-top: 6px;
+      }
+
+      .bottom-grid {
+        display: grid;
+        grid-template-columns: 1.6fr 1.4fr;
+        gap: 14px;
+      }
+
+      .rec-list {
+        margin: 0;
+        padding-left: 18px;
+        font-size: 11px;
+        color: var(--text-subtle);
+      }
+
+      .rec-list li {
+        margin-bottom: 4px;
+      }
+
+      .footer-note {
+        font-size: 11px;
+        color: var(--text-subtle);
+        text-align: center;
+        margin-top: 8px;
+      }
+
+      .range-buttons {
+        display: inline-flex;
+        border-radius: var(--radius-pill);
+        border: 1px solid var(--border-subtle);
+        overflow: hidden;
+        margin-left: 8px;
+      }
+
+      .range-btn {
+        font-size: 11px;
+        padding: 2px 8px;
+        border: none;
+        background: #ffffff;
+        cursor: pointer;
+      }
+
+      .range-btn.active {
+        background: var(--accent);
+        color: #ffffff;
+      }
+
+      .range-btn:not(.active):hover {
+        background: #f3f4ff;
+      }
+
+      @media (max-width: 900px) {
+        .main-grid,
+        .bottom-grid {
+          grid-template-columns: 1fr;
+        }
+
+        body {
+          padding: 12px;
+        }
+
+        .layout {
+          max-width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="layout">
+      <div class="topbar card">
+        <div class="logo">
+          <div class="logo-avatar">A</div>
+          <div class="logo-text">
+            <div class="logo-title">Avren team dashboard</div>
+            <div class="logo-subtitle">
+              High level AI usage for your team. No prompts, just behavior.
+            </div>
+          </div>
+          <span class="env-pill">Local dev</span>
+        </div>
+        <div class="topbar-right">
+          <div>
+            <strong>Org</strong> <span id="orgLabel">local-dev</span>
+          </div>
+          <div>
+            <strong>Team</strong>
+            <select id="teamSelect" class="pill-select">
+              <option value="default">default</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">
+              Team AI snapshot
+              <span id="snapshotTeamLabel"></span>
+            </div>
+            <div class="card-subtitle" id="snapshotSubtitle">
+              AI usage across the last 7 days for this team.
+            </div>
+          </div>
+          <div>
+            <span class="card-subtitle">Window</span>
+            <div class="range-buttons">
+              <button class="range-btn active" data-days="7">7d</button>
+              <button class="range-btn" data-days="14">14d</button>
+              <button class="range-btn" data-days="30">30d</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="chip-row" style="margin-bottom:10px;">
+          <span class="chip primary" id="chipEvents">0 events</span>
+          <span class="chip" id="chipUsers">0 active people</span>
+          <span class="chip" id="chipTools">0 tools</span>
+          <span class="chip" id="chipShadow">0 shadow AI events</span>
+          <span class="chip" id="chipSaturation">Saturation 0 / 100</span>
+        </div>
+
+        <div class="main-grid">
+          <div>
+            <div class="metrics-grid">
+              <div class="metric-card">
+                <div class="metric-label">Total events</div>
+                <div class="metric-value" id="metricTotalEvents">0</div>
+                <div class="metric-footnote" id="metricTotalEventsHint">
+                  Last 7 days from this team.
+                </div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-label">Active people</div>
+                <div class="metric-value" id="metricActiveUsers">0</div>
+                <div class="metric-footnote">
+                  Unique users that touched AI.
+                </div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-label">AI saturation</div>
+                <div class="metric-value" id="metricSaturation">0 / 100</div>
+                <div class="metric-footnote" id="metricSaturationHint">
+                  Light AI usage. Treat this as early adoption.
+                </div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-label">Shadow AI</div>
+                <div class="metric-value" id="metricShadowRate">0%</div>
+                <div class="metric-footnote" id="metricShadowHint">
+                  Events from untracked tools.
+                </div>
+              </div>
+            </div>
+
+            <div class="trend-row">
+              <div>
+                <div style="font-size:11px; font-weight:500;">
+                  Activity trend
+                </div>
+                <div class="trend-label" id="trendLabel">
+                  Not enough data yet to draw a pattern.
+                </div>
+              </div>
+              <div class="trend-bar" id="trendBar"></div>
+            </div>
+          </div>
+
+          <div>
+            <div style="font-size:12px; font-weight:600; margin-bottom:4px;">
+              Risk profile
+            </div>
+            <div class="risk-row" id="riskRow"></div>
+            <div class="card-subtitle" style="margin-top:8px;">
+              These are event level risk tags, not severity of incidents.
+              High means the session looked like structured or sensitive work.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bottom-grid">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Top tools</div>
+              <div class="card-subtitle">
+                Where this team actually uses AI during the selected window.
+              </div>
+            </div>
+          </div>
+          <table class="tools-table" id="toolsTable">
+            <thead>
+              <tr>
+                <th style="width:38%;">Tool</th>
+                <th style="width:26%;">Events</th>
+                <th style="width:36%;">Share</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+          <div class="empty" id="toolsEmpty">
+            No events yet. Once this team uses AI, you will see tools ranked
+            here.
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Suggested focus areas</div>
+              <div class="card-subtitle">
+                Simple, concrete moves for the next two weeks.
+              </div>
+            </div>
+          </div>
+          <ul class="rec-list" id="recList">
+            <li>
+              Ask people to route one repeat workflow through AI for the next
+              week. Example: triaging tickets or summarizing meetings.
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Usage by workflow</div>
+            <div class="card-subtitle">
+              Based on labels coming from the browser extension.
+            </div>
+          </div>
+        </div>
+        <table class="wf-table" id="wfTable">
+          <thead>
+            <tr>
+              <th style="width:44%;">Workflow</th>
+              <th style="width:20%;">Events</th>
+              <th style="width:18%;">Share</th>
+              <th style="width:18%;">Notes</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <div class="empty" id="wfEmpty">
+          No workflows tagged yet. Once people start tagging sessions in the
+          extension, patterns will show up here.
+        </div>
+      </div>
+
+      <div class="footer-note">
+        Avren tracks tool and domain only, never prompts or content.
+        Use this dashboard to steer AI adoption, risk, and playbooks
+        without turning into surveillance.
+      </div>
+    </div>
+
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      const ORG_ID = params.get("orgId") || "local-dev";
+      let currentTeamId = params.get("teamId") || "default";
+      let currentDays = 7;
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const orgLabel = document.getElementById("orgLabel");
+        if (orgLabel) orgLabel.textContent = ORG_ID;
+
+        const teamSelect = document.getElementById("teamSelect");
+        const rangeButtons = document.querySelectorAll(".range-btn");
+
+        if (teamSelect) {
+          teamSelect.addEventListener("change", () => {
+            currentTeamId = teamSelect.value || "default";
+            loadSummary();
+          });
+        }
+
+        rangeButtons.forEach((btn) => {
+          btn.addEventListener("click", () => {
+            rangeButtons.forEach((b) => b.classList.remove("active"));
+            btn.classList.add("active");
+            currentDays = parseInt(btn.getAttribute("data-days") || "7", 10);
+            loadSummary();
+          });
+        });
+
+        loadTeams().then(() => {
+          loadSummary();
+        });
+      });
+
+      async function fetchJson(path) {
+        const res = await fetch(path, {
+          credentials: "include"
+        });
+        if (res.status === 401) {
+          window.location.href = "/login?redirect=" + encodeURIComponent(window.location.pathname + window.location.search);
+          return Promise.reject(new Error("Unauthorized"));
+        }
+        if (!res.ok) {
+          throw new Error("HTTP " + res.status);
+        }
+        return res.json();
+      }
+
+      async function loadTeams() {
+        const teamSelect = document.getElementById("teamSelect");
+        const snapshotLabel = document.getElementById("snapshotTeamLabel");
+
+        try {
+          const data = await fetchJson(
+            `/orgs/${encodeURIComponent(ORG_ID)}/teams`
+          );
+
+          const teams = Array.isArray(data.teams) ? data.teams : [];
+          teamSelect.innerHTML = "";
+
+          if (!teams.length) {
+            const opt = document.createElement("option");
+            opt.value = "default";
+            opt.textContent = "default";
+            teamSelect.appendChild(opt);
+            currentTeamId = "default";
+            snapshotLabel.textContent = " · default";
+            return;
+          }
+
+          teams.forEach((t) => {
+            const opt = document.createElement("option");
+            opt.value = t.teamId;
+            opt.textContent = t.teamId;
+            teamSelect.appendChild(opt);
+          });
+
+          const hasCurrent = teams.some((t) => t.teamId === currentTeamId);
+          if (!hasCurrent) {
+            const hasDefault = teams.some((t) => t.teamId === "default");
+            currentTeamId = hasDefault ? "default" : teams[0].teamId;
+          }
+
+          teamSelect.value = currentTeamId;
+          snapshotLabel.textContent = " · " + currentTeamId;
+        } catch (e) {
+          console.error("Error loading teams", e);
+          teamSelect.innerHTML = `<option value="default">default</option>`;
+          currentTeamId = "default";
+          snapshotLabel.textContent = " · default";
+        }
+      }
+
+      async function loadSummary() {
+        const subtitle = document.getElementById("snapshotSubtitle");
+        const snapshotLabel = document.getElementById("snapshotTeamLabel");
+        snapshotLabel.textContent = " · " + currentTeamId;
+
+        subtitle.textContent =
+          "AI usage across the last " +
+          currentDays +
+          " days for this team.";
+
+        try {
+          const data = await fetchJson(
+            `/orgs/${encodeURIComponent(
+              ORG_ID
+            )}/teams/${encodeURIComponent(
+              currentTeamId
+            )}/summary?days=${currentDays}`
+          );
+          renderSummary(data);
+        } catch (e) {
+          console.error("Error loading summary", e);
+        }
+      }
+
+      function renderSummary(summary) {
+        const totalEvents = summary.totalEvents || 0;
+        const uniqueUsers = summary.uniqueUsers || 0;
+        const uniqueTools = summary.uniqueTools || 0;
+        const shadowEvents = summary.shadowEvents || 0;
+        const riskCounts = summary.riskCounts || {};
+        const days = summary.days || currentDays;
+        const saturationScore = summary.saturationScore || 0;
+        const eventsByDay = Array.isArray(summary.eventsByDay)
+          ? summary.eventsByDay
+          : [];
+
+        const chipEvents = document.getElementById("chipEvents");
+        const chipUsers = document.getElementById("chipUsers");
+        const chipTools = document.getElementById("chipTools");
+        const chipShadow = document.getElementById("chipShadow");
+        const chipSaturation = document.getElementById("chipSaturation");
+
+        chipEvents.innerHTML = `<strong>${totalEvents}</strong> events`;
+        chipUsers.innerHTML = `<strong>${uniqueUsers}</strong> active people`;
+        chipTools.innerHTML = `<strong>${uniqueTools}</strong> tools`;
+        chipShadow.innerHTML = `<strong>${shadowEvents}</strong> shadow events`;
+        chipSaturation.innerHTML = `<strong>${saturationScore}</strong> / 100 saturation`;
+
+        const metricTotal = document.getElementById("metricTotalEvents");
+        const metricTotalHint = document.getElementById(
+          "metricTotalEventsHint"
+        );
+        const metricUsers = document.getElementById("metricActiveUsers");
+        const metricSaturation = document.getElementById("metricSaturation");
+        const metricSaturationHint = document.getElementById(
+          "metricSaturationHint"
+        );
+        const metricShadowRate = document.getElementById("metricShadowRate");
+        const metricShadowHint = document.getElementById("metricShadowHint");
+
+        metricTotal.textContent = String(totalEvents);
+        metricTotalHint.textContent =
+          "Events from this team over the last " + days + " days.";
+
+        metricUsers.textContent = String(uniqueUsers);
+        metricSaturation.textContent = String(saturationScore) + " / 100";
+
+        if (!totalEvents) {
+          metricSaturationHint.textContent =
+            "No AI usage yet in this window. Treat this as a clean baseline.";
+        } else if (saturationScore <= 25) {
+          metricSaturationHint.textContent =
+            "Light AI usage. Focus on one or two repeat workflows first.";
+        } else if (saturationScore <= 60) {
+          metricSaturationHint.textContent =
+            "Steady AI use. Time to standardize prompts and playbooks.";
+        } else if (saturationScore <= 85) {
+          metricSaturationHint.textContent =
+            "Strong AI adoption. Next step is consistency and guardrails.";
+        } else {
+          metricSaturationHint.textContent =
+            "High saturation. Focus on optimization and governance.";
+        }
+
+        const shadowRate =
+          totalEvents > 0 ? Math.round((shadowEvents / totalEvents) * 100) : 0;
+        metricShadowRate.textContent = shadowRate + "%";
+
+        if (shadowRate === 0) {
+          metricShadowHint.textContent =
+            "Everything is landing in known tools right now.";
+        } else if (shadowRate <= 20) {
+          metricShadowHint.textContent =
+            "Some usage in unknown tools. Worth reviewing, not panicking.";
+        } else {
+          metricShadowHint.textContent =
+            "A lot of usage is in shadow tools. Consider a short guidance doc.";
+        }
+
+        renderRiskPills(riskCounts, totalEvents);
+        renderTrend(eventsByDay, days, totalEvents);
+        renderTopTools(summary);
+        renderWorkflows(summary);
+        renderRecommendations(summary);
+      }
+
+      function renderRiskPills(riskCounts, totalEvents) {
+        const low = riskCounts.low || 0;
+        const med = riskCounts.medium || 0;
+        const high = riskCounts.high || 0;
+        const unk = riskCounts.unknown || 0;
+
+        const row = document.getElementById("riskRow");
+
+        const build = (label, count, cls) => {
+          const pct =
+            totalEvents > 0
+              ? " · " + Math.round((count / totalEvents) * 100) + "%"
+              : "";
+          return `
+            <span class="risk-pill ${cls}">
+              <span class="dot"></span>
+              <span>${label}${pct}</span>
+            </span>
+          `;
+        };
+
+        row.innerHTML =
+          build("low", low, "risk-low") +
+          build("medium", med, "risk-medium") +
+          build("high", high, "risk-high") +
+          build("unknown", unk, "risk-unknown");
+      }
+
+      function renderTrend(eventsByDay, days, totalEvents) {
+        const bar = document.getElementById("trendBar");
+        const label = document.getElementById("trendLabel");
+
+        bar.innerHTML = "";
+
+        if (!eventsByDay.length || !totalEvents) {
+          label.textContent =
+            "Not enough data yet to draw a pattern. Once there are events most days, you will see a simple activity bar.";
+          return;
+        }
+
+        label.textContent =
+          "Higher columns mean more AI events that day in this window.";
+
+        const maxCount = eventsByDay.reduce(
+          (max, d) => Math.max(max, d.count || 0),
+          0
+        );
+
+        eventsByDay.forEach((d) => {
+          const h =
+            maxCount > 0 ? Math.max(4, (d.count / maxCount) * 32) : 4;
+          const col = document.createElement("div");
+          col.className = "trend-bar-col" + (d.count === maxCount ? " peak" : "");
+          const inner = document.createElement("div");
+          inner.className = "trend-bar-col-inner";
+          inner.style.height = h + "px";
+          col.appendChild(inner);
+          bar.appendChild(col);
+        });
+      }
+
+      function renderTopTools(summary) {
+        const tbody = document
+          .getElementById("toolsTable")
+          .querySelector("tbody");
+        const empty = document.getElementById("toolsEmpty");
+
+        const totalEvents = summary.totalEvents || 0;
+        const events = summary.rawEvents || [];
+
+        if (!totalEvents && !events.length) {
+          tbody.innerHTML = "";
+          empty.style.display = "block";
+          return;
+        }
+
+        const toolCounts = {};
+        if (Array.isArray(events) && events.length) {
+          events.forEach((e) => {
+            const key = e.tool || "Unknown AI tool";
+            toolCounts[key] = (toolCounts[key] || 0) + 1;
+          });
+        }
+
+        if (!Object.keys(toolCounts).length) {
+          tbody.innerHTML = "";
+          empty.textContent =
+            "Backend did not attach tool breakdown yet. You can add this later.";
+          empty.style.display = "block";
+          return;
+        }
+
+        const sorted = Object.entries(toolCounts).sort(
+          (a, b) => b[1] - a[1]
+        );
+
+        tbody.innerHTML = "";
+        sorted.slice(0, 5).forEach(([tool, count]) => {
+          const share =
+            totalEvents > 0
+              ? Math.round((count / totalEvents) * 100)
+              : 0;
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${escapeHtml(tool)}</td>
+            <td>${count}</td>
+            <td>${share}% of events</td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+        empty.style.display = "none";
+      }
+
+      function renderWorkflows(summary) {
+        const tbody = document
+          .getElementById("wfTable")
+          .querySelector("tbody");
+        const empty = document.getElementById("wfEmpty");
+
+        const events = summary.rawEvents || [];
+        const totalEvents = summary.totalEvents || 0;
+
+        if (!Array.isArray(events) || !events.length) {
+          tbody.innerHTML = "";
+          empty.style.display = "block";
+          return;
+        }
+
+        const wfMap = new Map();
+        events.forEach((e) => {
+          const wf = (e.workflow || "").trim() || "Unlabeled";
+          const prev = wfMap.get(wf) || 0;
+          wfMap.set(wf, prev + 1);
+        });
+
+        const sorted = Array.from(wfMap.entries()).sort(
+          (a, b) => b[1] - a[1]
+        );
+
+        tbody.innerHTML = "";
+        sorted.forEach(([wf, count]) => {
+          const share =
+            totalEvents > 0
+              ? Math.round((count / totalEvents) * 100)
+              : 0;
+          const note =
+            wf.toLowerCase().includes("support") ||
+            wf.toLowerCase().includes("ticket")
+              ? "Likely live customer data"
+              : wf.toLowerCase().includes("analysis") ||
+                wf.toLowerCase().includes("data")
+              ? "Structured exports or reports"
+              : wf.toLowerCase().includes("coding")
+              ? "Logs and stack traces"
+              : wf.toLowerCase().includes("writing") ||
+                wf.toLowerCase().includes("draft")
+              ? "Primarily drafting work"
+              : "";
+
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${escapeHtml(wf)}</td>
+            <td>${count}</td>
+            <td>${share}%</td>
+            <td>${escapeHtml(note)}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+        empty.style.display = "none";
+      }
+
+      function renderRecommendations(summary) {
+        const recList = document.getElementById("recList");
+        const totalEvents = summary.totalEvents || 0;
+        const shadowEvents = summary.shadowEvents || 0;
+        const riskCounts = summary.riskCounts || {};
+        const saturation = summary.saturationScore || 0;
+
+        const high = riskCounts.high || 0;
+        const med = riskCounts.medium || 0;
+
+        const recs = [];
+
+        if (!totalEvents) {
+          recs.push(
+            "Pick one recurring workflow such as ticket summarization or drafting follow up emails and ask the team to use AI every time they do it next week."
+          );
+          recs.push(
+            "Once people find a prompt that works, capture it in a short shared doc so others can copy it."
+          );
+        } else {
+          if (saturation < 30) {
+            recs.push(
+              "AI usage is still light. Choose one or two workflows where AI clearly saves time and turn them into simple playbooks."
+            );
+          } else if (saturation < 70) {
+            recs.push(
+              "AI is in regular use. Focus on standardizing prompts so people are not reinventing them each time."
+            );
+          } else {
+            recs.push(
+              "AI is heavily used. Start defining what data should never leave core systems and make that explicit in team guidance."
+            );
+          }
+
+          const shadowRate =
+            totalEvents > 0
+              ? Math.round((shadowEvents / totalEvents) * 100)
+              : 0;
+
+          if (shadowRate > 25) {
+            recs.push(
+              "A large fraction of usage is in tools you do not recognize. Decide which tools you actually want to bless and nudge people toward those."
+            );
+          }
+
+          if (high + med > 0) {
+            recs.push(
+              "There are several medium or high risk sessions. Review which workflows those belong to and check they align with data handling expectations."
+            );
+          }
+
+          if (recs.length === 0) {
+            recs.push(
+              "Keep doubling down on the workflows where AI saves the most time and make those the default path for the team."
+            );
+          }
+        }
+
+        recList.innerHTML = "";
+        recs.forEach((r) => {
+          const li = document.createElement("li");
+          li.textContent = r;
+          recList.appendChild(li);
+        });
+      }
+
+      function escapeHtml(str) {
+        if (str == null) return "";
+        return String(str)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+    </script>
+  </body>
+</html>
